@@ -1,0 +1,41 @@
+name: nuxai_overlay
+description: NuxAI Voice Assistant Overlay UI
+version: 0.1.0
+publish_to: 'none'
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # WebSocket communication
+  web_socket_channel: ^2.4.0
+  
+  # State management
+  provider: ^6.1.1
+  
+  # Window management (Linux desktop)
+  window_manager: ^0.3.7
+  
+  # UI
+  flutter_svg: ^2.0.9
+  animated_text_kit: ^4.2.2
+  
+  # Utilities
+  http: ^1.1.0
+  logger: ^2.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - assets/images/
+    - assets/icons/
+
