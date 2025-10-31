@@ -1,0 +1,30 @@
+{
+  "app": {
+    "name": "NuxAI",
+    "version": "0.3.0"
+  },
+  "personality": {
+    "name": "Nux",
+    "type": "friendly",
+    "voice_enabled": true
+  },
+  "voice": {
+    "wake_words": ["computer", "hey computer", "nux", "hey nux"],
+    "whisper_model": "base",
+    "recording_duration": 5,
+    "tts_rate": 175,
+    "tts_volume": 0.9,
+    "tts_voice_index": null
+  },
+  "server": {
+    "host": "127.0.0.1",
+    "port": 8000
+  },
+  "features": {
+    "wake_word_detection": true,
+    "voice_recognition": true,
+    "text_to_speech": true,
+    "intent_parsing": true
+  }
+}
+

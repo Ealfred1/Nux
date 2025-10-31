@@ -1,11 +1,13 @@
 """
-Command Execution Module
-Executes system commands based on voice input
+Command Execution Module (v0.2 Enhanced)
+Executes system commands based on voice input with intent support
 """
 import subprocess
 import shlex
+import asyncio
 from datetime import datetime
 from pathlib import Path
+from typing import Dict, Any
 from utils.logger import setup_logger
 
 logger = setup_logger(__name__)
@@ -15,6 +17,7 @@ class CommandExecutor:
     """Executes voice commands as system operations"""
     
     def __init__(self):
+        # Legacy command map for backward compatibility
         self.command_map = {
             "open browser": self._open_browser,
             "open firefox": self._open_browser,
@@ -27,6 +30,47 @@ class CommandExecutor:
             "open file manager": self._open_file_manager,
             "open calculator": self._open_calculator,
         }
+        
+        # Intent-based handlers (v0.2)
+        self.intent_handlers = {
+            "open_application": self._handle_open_application,
+            "screenshot": self._handle_screenshot,
+            "time_query": self._handle_time_query,
+            "system_control": self._handle_system_control,
+            "volume_control": self._handle_volume_control,
+            "search": self._handle_search,
+        }
+    
+    async def execute_with_intent(self, command_text: str, intent_result: Dict[str, Any]) -> dict:
+        """Execute command using intent-based routing (v0.2)"""
+        intent = intent_result.get("intent")
+        parameters = intent_result.get("parameters", {})
+        
+        logger.info(f"⚡ Executing intent: {intent} with params: {parameters}")
+        
+        # Get handler for intent
+        handler = self.intent_handlers.get(intent)
+        
+        if handler:
+            try:
+                result = handler(parameters) if not asyncio.iscoroutinefunction(handler) else await handler(parameters)
+                return {
+                    "success": True,
+                    "intent": intent,
+                    "command": command_text,
+                    "result": result
+                }
+            except Exception as e:
+                logger.error(f"Error executing intent {intent}: {e}")
+                return {
+                    "success": False,
+                    "intent": intent,
+                    "command": command_text,
+                    "error": str(e)
+                }
+        else:
+            # Fallback to legacy execution
+            return await self.execute(command_text)
     
     async def execute(self, command_text: str) -> dict:
         """Execute a command based on voice input"""
@@ -143,7 +187,104 @@ class CommandExecutor:
             except FileNotFoundError:
                 continue
         return "No calculator found"
-
-
-import asyncio
+    
+    # ===== Intent-based handlers (v0.2) =====
+    
+    def _handle_open_application(self, params: Dict[str, Any]) -> str:
+        """Handle open_application intent"""
+        app_name = params.get("application", "").lower()
+        
+        # Map common application names
+        app_map = {
+            "browser": self._open_browser,
+            "firefox": self._open_browser,
+            "chrome": lambda: self._open_browser("google-chrome"),
+            "terminal": self._open_terminal,
+            "file manager": self._open_file_manager,
+            "files": self._open_file_manager,
+            "calculator": self._open_calculator,
+            "calc": self._open_calculator,
+        }
+        
+        handler = app_map.get(app_name)
+        if handler:
+            return handler()
+        
+        # Try to open by name directly
+        try:
+            subprocess.Popen([app_name], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            return f"Opening {app_name}"
+        except FileNotFoundError:
+            return f"Application '{app_name}' not found"
+    
+    def _handle_screenshot(self, params: Dict[str, Any]) -> str:
+        """Handle screenshot intent"""
+        return self._take_screenshot()
+    
+    def _handle_time_query(self, params: Dict[str, Any]) -> str:
+        """Handle time query intent"""
+        return self._get_time()
+    
+    def _handle_system_control(self, params: Dict[str, Any]) -> str:
+        """Handle system control intent"""
+        action = params.get("action", "").lower()
+        
+        commands = {
+            "shutdown": "systemctl poweroff",
+            "restart": "systemctl reboot",
+            "reboot": "systemctl reboot",
+            "sleep": "systemctl suspend",
+            "suspend": "systemctl suspend",
+        }
+        
+        command = commands.get(action)
+        if command:
+            logger.warning(f"System control command requested: {action}")
+            return f"System {action} command requires elevated privileges"
+        
+        return f"Unknown system control action: {action}"
+    
+    def _handle_volume_control(self, params: Dict[str, Any]) -> str:
+        """Handle volume control intent"""
+        try:
+            if "level" in params:
+                level = params["level"]
+                subprocess.run(["pactl", "set-sink-volume", "@DEFAULT_SINK@", f"{level}%"], check=True)
+                return f"Volume set to {level}%"
+            
+            action = params.get("action", "").lower()
+            if action in ["increase", "raise"]:
+                subprocess.run(["pactl", "set-sink-volume", "@DEFAULT_SINK@", "+10%"], check=True)
+                return "Volume increased"
+            elif action in ["decrease", "lower"]:
+                subprocess.run(["pactl", "set-sink-volume", "@DEFAULT_SINK@", "-10%"], check=True)
+                return "Volume decreased"
+            elif action == "mute":
+                subprocess.run(["pactl", "set-sink-mute", "@DEFAULT_SINK@", "1"], check=True)
+                return "Audio muted"
+            elif action == "unmute":
+                subprocess.run(["pactl", "set-sink-mute", "@DEFAULT_SINK@", "0"], check=True)
+                return "Audio unmuted"
+        except Exception as e:
+            logger.error(f"Volume control error: {e}")
+            return "Volume control not available"
+    
+    def _handle_search(self, params: Dict[str, Any]) -> str:
+        """Handle search intent"""
+        query = params.get("query", "")
+        if query:
+            # Open browser with search
+            import urllib.parse
+            encoded_query = urllib.parse.quote(query)
+            url = f"https://www.google.com/search?q={encoded_query}"
+            try:
+                for browser in ["firefox", "google-chrome", "chromium"]:
+                    try:
+                        subprocess.Popen([browser, url], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                        return f"Searching for: {query}"
+                    except FileNotFoundError:
+                        continue
+            except Exception as e:
+                logger.error(f"Search error: {e}")
+        return "Search failed"
 

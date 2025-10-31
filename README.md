@@ -2,9 +2,9 @@
 
 <div align="center">
 
-**An offline, privacy-focused voice assistant for Linux desktops**
+**An offline, privacy-focused voice assistant for Linux desktops with personality**
 
-[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/yourusername/nuxai)
+[![Version](https://img.shields.io/badge/version-0.3.0-blue.svg)](https://github.com/yourusername/nuxai)
 [![Platform](https://img.shields.io/badge/platform-Linux-lightgrey.svg)](https://www.linux.org/)
 [![Python](https://img.shields.io/badge/python-3.8+-green.svg)](https://www.python.org/)
 [![Flutter](https://img.shields.io/badge/flutter-3.0+-02569B.svg)](https://flutter.dev/)
@@ -15,15 +15,19 @@
 
 ## 📋 Overview
 
-NuxAI is a native desktop voice assistant that brings voice interaction to Linux, working entirely offline with no cloud dependencies. Activate it with a wake word, see a beautiful visual overlay, and execute commands hands-free.
+NuxAI is a native desktop voice assistant that brings **intelligent voice interaction** to Linux, working entirely offline with no cloud dependencies. Activate it with a wake word, see a beautiful visual overlay, speak naturally, and get voice responses with personality!
 
 ### ✨ Key Features
 
 - 🎙️ **Offline Wake Word Detection** - Uses Vosk for local voice recognition
+- 🧠 **Whisper Speech Recognition** - Accurate STT with OpenAI Whisper (v0.2)
+- 🗣️ **Text-to-Speech Responses** - Voice feedback with pyttsx3 (v0.3)
+- 🎭 **Personality System** - Customizable AI personality (friendly, professional, casual) (v0.3)
+- 💡 **Intent Parsing** - Natural language understanding (v0.2)
 - 🖥️ **Sleek Visual Overlay** - Modern, transparent Flutter UI
-- ⚡ **Fast Command Execution** - Open apps, take screenshots, get system info
+- ⚡ **Advanced Commands** - Volume control, web search, system operations
 - 🔒 **Privacy-First** - All processing happens on your machine
-- 🚀 **FastAPI Backend** - High-performance Python server
+- 🚀 **FastAPI Backend** - High-performance async Python server
 - 📡 **Real-time Communication** - WebSocket-based frontend/backend sync
 
 ## 🏗️ Architecture
@@ -128,27 +132,73 @@ flutter run -d linux
 4. **Speak your command** - e.g., "open browser", "take screenshot"
 5. **Watch it execute** - The overlay shows the result
 
-### Supported Commands (v0.1)
+### Supported Commands (v0.3)
 
-| Command | Action |
-|---------|--------|
-| "open browser" | Opens default web browser |
-| "take screenshot" | Captures screen to Pictures/Screenshots |
-| "what time is it" | Displays current time |
-| "open terminal" | Opens terminal window |
-| "open file manager" | Opens file browser |
-| "open calculator" | Opens calculator app |
+| Command | Action | Version |
+|---------|--------|---------|
+| "open browser" | Opens default web browser | v0.1 |
+| "open [app name]" | Opens any application by name | v0.2 |
+| "take screenshot" | Captures screen to Pictures/Screenshots | v0.1 |
+| "what time is it" | Displays current time with voice | v0.1 |
+| "open terminal" | Opens terminal window | v0.1 |
+| "open file manager" | Opens file browser | v0.1 |
+| "open calculator" | Opens calculator app | v0.1 |
+| "increase/decrease volume" | Adjusts system volume | v0.2 |
+| "set volume to [level]" | Sets volume to specific level | v0.2 |
+| "mute/unmute" | Mutes or unmutes audio | v0.2 |
+| "search for [query]" | Opens browser with search results | v0.2 |
+
+### New in v0.3 🗣️
+- **Voice Responses**: Nux now speaks back to you!
+- **Personality Types**: Choose from friendly, professional, casual, or excited
+- **Custom Configuration**: Edit `backend/config.json` to customize behavior
+- **Natural Responses**: Context-aware, personality-driven responses
+
+### New in v0.2 🧠
+- **Whisper Integration**: More accurate speech recognition
+- **Intent Parsing**: Better natural language understanding
+- **Advanced Commands**: Volume control, web search, system operations
 
 ## 🛠️ Configuration
 
-### Backend Configuration
+### Personality & Voice Settings (v0.3)
 
-Edit `backend/.env` (create from `.env.example`):
+Edit `backend/config.json` to customize NuxAI:
 
-```env
-HOST=127.0.0.1
-PORT=8000
-SAMPLE_RATE=16000
+```json
+{
+  "personality": {
+    "name": "Nux",
+    "type": "friendly",
+    "voice_enabled": true
+  },
+  "voice": {
+    "wake_words": ["computer", "hey computer", "nux"],
+    "whisper_model": "base",
+    "recording_duration": 5,
+    "tts_rate": 175,
+    "tts_volume": 0.9
+  }
+}
+```
+
+**Personality Types**:
+- `friendly` - Warm and helpful (default)
+- `professional` - Formal and efficient
+- `casual` - Relaxed and conversational
+- `excited` - Energetic and enthusiastic
+
+### Server Configuration
+
+Edit `backend/config.json`:
+
+```json
+{
+  "server": {
+    "host": "127.0.0.1",
+    "port": 8000
+  }
+}
 ```
 
 ### Overlay Configuration
@@ -225,23 +275,48 @@ sudo usermod -a -G audio $USER
 
 ## 🗺️ Roadmap
 
-### v0.2
-- [ ] Better wake word accuracy
-- [ ] More voice commands
-- [ ] Plugin system for custom commands
-- [ ] System tray integration
+### ✅ v0.1 - COMPLETE
+- [x] Wake word detection
+- [x] Visual overlay
+- [x] Basic commands
+- [x] WebSocket communication
 
-### v0.3
+### ✅ v0.2 - COMPLETE
+- [x] Whisper integration
+- [x] Intent parsing
+- [x] Advanced commands (volume, search)
+- [x] Better accuracy
+
+### ✅ v0.3 - COMPLETE
+- [x] Text-to-speech responses
+- [x] Personality system
+- [x] Configuration system
+- [x] Voice feedback
+
+### v0.4 - In Progress
+- [ ] Skills/plugins system
+- [ ] Dynamic skill loading
+- [ ] CLI for skill management
+- [ ] Developer API
+
+### v0.5
+- [ ] Local LLM integration
+- [ ] Context memory
+- [ ] Conversation history
+- [ ] Compound commands
+
+### v0.6
 - [ ] macOS support
 - [ ] Windows support
-- [ ] Multiple language support
-- [ ] Voice feedback (TTS)
+- [ ] Cross-platform commands
+- [ ] Hotkey fallback
 
 ### v1.0
-- [ ] Cloud integration (optional)
-- [ ] Smart home control
-- [ ] Calendar/reminder integration
-- [ ] Learning/adaptive behavior
+- [ ] Stable release
+- [ ] Multi-language support
+- [ ] Plugin marketplace
+- [ ] Custom themes
+- [ ] Cloud sync (optional)
 
 ## 📄 License
 

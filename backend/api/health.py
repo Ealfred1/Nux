@@ -1,9 +1,10 @@
 """
-Health Check API Router
+Health Check API Router (v0.3)
 Provides health and status endpoints
 """
 from fastapi import APIRouter
 from datetime import datetime
+from config import config
 
 router = APIRouter()
 
@@ -13,8 +14,8 @@ async def health_check():
     """Health check endpoint"""
     return {
         "status": "healthy",
-        "service": "NuxAI Backend",
-        "version": "0.1.0",
+        "service": config.get("app.name", "NuxAI"),
+        "version": config.get("app.version", "0.3.0"),
         "timestamp": datetime.now().isoformat()
     }
 
@@ -24,14 +25,14 @@ async def status():
     """Detailed status endpoint"""
     return {
         "status": "running",
-        "service": "NuxAI Backend",
-        "version": "0.1.0",
-        "features": {
-            "wake_word_detection": True,
-            "voice_commands": True,
-            "websocket": True,
-            "offline_mode": True
+        "service": config.get("app.name", "NuxAI"),
+        "version": config.get("app.version", "0.3.0"),
+        "personality": {
+            "name": config.get("personality.name"),
+            "type": config.get("personality.type"),
+            "voice_enabled": config.get("personality.voice_enabled")
         },
+        "features": config.get("features", {}),
         "timestamp": datetime.now().isoformat()
     }
 
