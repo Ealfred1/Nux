@@ -1,7 +1,9 @@
 {
   "app": {
     "name": "NuxAI",
-    "version": "0.3.0"
+    "version": "1.0.0",
+    "theme": "dark",
+    "language": "en"
   },
   "personality": {
     "name": "Nux",
@@ -24,7 +26,35 @@
     "wake_word_detection": true,
     "voice_recognition": true,
     "text_to_speech": true,
-    "intent_parsing": true
+    "intent_parsing": true,
+    "skills": true,
+    "llm": false,
+    "context_memory": true,
+    "hotkeys": true,
+    "system_tray": true,
+    "cross_platform": true
+  },
+  "skills": {
+    "enabled": ["weather", "notes", "developer"],
+    "auto_load": true
+  },
+  "llm": {
+    "enabled": false,
+    "model": "orca-mini-3b-gguf2-q4_0.gguf",
+    "max_tokens": 100
+  },
+  "context": {
+    "max_history": 50,
+    "window_minutes": 30
+  },
+  "hotkeys": {
+    "activate": "ctrl+shift+space",
+    "enabled": true
+  },
+  "ui": {
+    "theme": "dark",
+    "overlay_timeout": 4,
+    "show_tray_icon": true
   }
 }
 

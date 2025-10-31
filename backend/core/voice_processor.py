@@ -11,6 +11,7 @@ from core.speech_processor import SpeechProcessor
 from core.intent_parser import IntentParser
 from core.tts_engine import TTSEngine
 from core.personality import Personality
+from core.skill_manager import SkillManager
 
 logger = setup_logger(__name__)
 
@@ -30,6 +31,9 @@ class VoiceProcessor:
         # Initialize v0.3 components
         self.tts_engine = TTSEngine()
         self.personality = Personality(self.config.get("personality", {}))
+        
+        # Initialize v0.4 components
+        self.skill_manager = SkillManager()
         
         # Settings
         self.recording_duration = self.config.get("voice", {}).get("recording_duration", 5)
@@ -61,20 +65,30 @@ class VoiceProcessor:
                     "command": command_text
                 })
                 
-                # Parse intent (v0.2)
-                intent_result = self.intent_parser.parse(command_text)
+                # Try skills first (v0.4)
+                skill_result = await self.skill_manager.execute_command(command_text)
                 
-                # Execute command with intent
-                result = await self.command_executor.execute_with_intent(
-                    command_text, 
-                    intent_result
-                )
+                if skill_result:
+                    result = skill_result
+                    intent_result = {"intent": "skill", "original_text": command_text}
+                else:
+                    # Parse intent (v0.2)
+                    intent_result = self.intent_parser.parse(command_text)
+                    
+                    # Execute command with intent
+                    result = await self.command_executor.execute_with_intent(
+                        command_text, 
+                        intent_result
+                    )
                 
-                # Generate personality response (v0.3)
-                response_text = self.personality.format_command_response(
-                    intent_result["intent"],
-                    result
-                )
+                # Use skill response if available, otherwise generate personality response (v0.3)
+                if result.get("speak"):
+                    response_text = result["speak"]
+                else:
+                    response_text = self.personality.format_command_response(
+                        intent_result["intent"],
+                        result
+                    )
                 
                 # Speak response (v0.3)
                 if self.voice_enabled:

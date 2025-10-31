@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NuxAI Settings</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #fff;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #4A90E2, #67B26F);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle { color: #bbb; margin-bottom: 40px; }
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+        .section h2 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #4A90E2;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ddd;
+            font-weight: 500;
+        }
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #4A90E2;
+            background: rgba(255, 255, 255, 0.15);
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        .btn {
+            background: linear-gradient(90deg, #4A90E2, #67B26F);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.4);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+        .success-message {
+            background: #67B26F;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚙️ NuxAI Settings</h1>
+        <p class="subtitle">Configure your AI voice assistant</p>
+        
+        <form id="settingsForm">
+            <!-- Personality -->
+            <div class="section">
+                <h2>🎭 Personality</h2>
+                <div class="form-group">
+                    <label>Assistant Name</label>
+                    <input type="text" name="personality.name" value="{{ config.personality.name }}">
+                </div>
+                <div class="form-group">
+                    <label>Personality Type</label>
+                    <select name="personality.type">
+                        <option value="friendly" {% if config.personality.type == 'friendly' %}selected{% endif %}>Friendly</option>
+                        <option value="professional" {% if config.personality.type == 'professional' %}selected{% endif %}>Professional</option>
+                        <option value="casual" {% if config.personality.type == 'casual' %}selected{% endif %}>Casual</option>
+                        <option value="excited" {% if config.personality.type == 'excited' %}selected{% endif %}>Excited</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Voice -->
+            <div class="section">
+                <h2>🎤 Voice Settings</h2>
+                <div class="checkbox-group">
+                    <input type="checkbox" name="personality.voice_enabled" {% if config.personality.voice_enabled %}checked{% endif %}>
+                    <label>Enable Text-to-Speech</label>
+                </div>
+                <div class="form-group">
+                    <label>TTS Speed (words per minute)</label>
+                    <input type="number" name="voice.tts_rate" value="{{ config.voice.tts_rate }}">
+                </div>
+                <div class="form-group">
+                    <label>TTS Volume (0.0 - 1.0)</label>
+                    <input type="number" name="voice.tts_volume" value="{{ config.voice.tts_volume }}" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label>Recording Duration (seconds)</label>
+                    <input type="number" name="voice.recording_duration" value="{{ config.voice.recording_duration }}">
+                </div>
+            </div>
+            
+            <!-- Features -->
+            <div class="section">
+                <h2>✨ Features</h2>
+                <div class="checkbox-group">
+                    <input type="checkbox" name="features.skills" {% if config.features.skills %}checked{% endif %}>
+                    <label>Enable Skills System</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" name="features.llm" {% if config.features.llm %}checked{% endif %}>
+                    <label>Enable Local LLM (requires GPT4All)</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" name="features.hotkeys" {% if config.features.hotkeys %}checked{% endif %}>
+                    <label>Enable Global Hotkeys</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" name="features.system_tray" {% if config.features.system_tray %}checked{% endif %}>
+                    <label>Show System Tray Icon</label>
+                </div>
+            </div>
+            
+            <!-- UI -->
+            <div class="section">
+                <h2>🎨 User Interface</h2>
+                <div class="form-group">
+                    <label>Theme</label>
+                    <select name="ui.theme">
+                        <option value="dark" {% if config.ui.theme == 'dark' %}selected{% endif %}>Dark</option>
+                        <option value="light" {% if config.ui.theme == 'light' %}selected{% endif %}>Light</option>
+                        <option value="auto" {% if config.ui.theme == 'auto' %}selected{% endif %}>Auto</option>
+                    </select>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn">💾 Save Settings</button>
+            <div class="success-message" id="successMessage">
+                ✅ Settings saved successfully!
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        document.getElementById('settingsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const settings = {};
+            
+            for (let [key, value] of formData.entries()) {
+                const keys = key.split('.');
+                let obj = settings;
+                for (let i = 0; i < keys.length - 1; i++) {
+                    if (!obj[keys[i]]) obj[keys[i]] = {};
+                    obj = obj[keys[i]];
+                }
+                // Convert boolean checkboxes
+                obj[keys[keys.length - 1]] = value === 'on' ? true : value;
+            }
+            
+            const response = await fetch('/api/settings', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(settings)
+            });
+            
+            if (response.ok) {
+                const msg = document.getElementById('successMessage');
+                msg.style.display = 'block';
+                setTimeout(() => msg.style.display = 'none', 3000);
+            }
+        });
+    </script>
+</body>
+</html>
+

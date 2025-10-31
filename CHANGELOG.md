@@ -2,6 +2,73 @@
 
 All notable changes to NuxAI will be documented in this file.
 
+## [1.0.0] - 2025-10-31 🎉
+
+### Added - Full Production Release
+- **System Tray Integration**: Runs quietly in background with tray icon
+- **Web-based Settings UI**: Configure NuxAI via browser at /settings
+- **Theme System**: Dark/Light/Auto themes
+- **Multi-language Foundation**: Infrastructure for i18n support
+- **Deployment Scripts**: Easy installation and distribution
+- **Platform Detection**: Automatic platform-specific behavior
+- **Comprehensive Logging**: Detailed logging across all components
+
+### Technical
+- Complete integration of all features
+- Production-ready error handling
+- Modular architecture
+- Extensive documentation
+
+## [0.6.0] - 2025-10-31
+
+### Added - Cross-Platform Support 🌍
+- **Platform Manager**: Unified API for Windows, macOS, Linux
+- **Hotkey System**: Global keyboard shortcuts (Ctrl+Shift+Space)
+- **Platform Abstraction**: Commands work across all OSes
+- **Clipboard Integration**: Cross-platform clipboard support
+- **Windows Support**: Native Windows commands
+- **macOS Support**: Native macOS commands
+
+### Enhanced
+- Screenshot works on all platforms
+- Volume control unified
+- Application launching abstracted
+- Path handling normalized
+
+## [0.5.0] - 2025-10-31
+
+### Added - LLM & Context Memory 🧠
+- **Local LLM Integration**: GPT4All for intelligent responses
+- **Context Memory**: Remembers conversation history
+- **Compound Commands**: Parse multiple actions ("open chrome and search")
+- **Command History**: Track and search past commands
+- **Session Statistics**: Usage analytics
+- **Smart Understanding**: LLM-enhanced command interpretation
+
+### Technical
+- ChromaDB for vector storage
+- Context window management
+- Memory cleanup strategies
+- LLM fallback handling
+
+## [0.4.0] - 2025-10-31
+
+### Added - Skills System 🔌
+- **Dynamic Skill Loading**: Load skills from Python files
+- **Skill Manager**: Centralized skill lifecycle
+- **Built-in Skills**:
+  - Weather: Get weather info (wttr.in API)
+  - Notes: Voice notes and reminders
+  - Developer: Git, Docker, VS Code commands
+- **CLI Tool**: `nuxai_cli.py` for skill management
+- **Skill API**: Easy custom skill development
+
+### Technical
+- Async skill execution
+- Skill metadata system
+- Priority-based skill matching
+- Hot-reloadable skills
+
 ## [0.3.0] - 2025-10-31
 
 ### Added - Voice Output & Personality 🗣️
