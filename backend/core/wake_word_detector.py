@@ -39,8 +39,11 @@ class WakeWordDetector:
         try:
             logger.info("🎤 Initializing wake word detector...")
             
-            # Initialize Vosk model
-            model_path = Path("models/vosk-model-small-en-us-0.15")
+            # Initialize Vosk model - use absolute path based on this file's location
+            import os
+            script_dir = Path(__file__).parent.parent  # Go up to backend directory
+            model_path = script_dir / "models" / "vosk-model-small-en-us-0.15"
+            
             if not model_path.exists():
                 logger.error(f"Vosk model not found at {model_path}")
                 logger.info("Please download the model: https://alphacephei.com/vosk/models")

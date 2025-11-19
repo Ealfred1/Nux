@@ -2,7 +2,7 @@
 LLM Processor (v0.5)
 Local LLM integration for intelligent command understanding
 """
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 from utils.logger import setup_logger
 
 logger = setup_logger(__name__)
